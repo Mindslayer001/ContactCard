@@ -1,5 +1,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 
@@ -27,10 +29,11 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
       <Tabs.Screen
-        name="index"
+        name="sharedProfile"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Shared Profile",
+          tabBarLabel: 'Shared Profile', // Use tabBarLabel instead of title
+          tabBarIcon: ({ color }) => <AntDesign name="profile" color={color} size={25} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -48,10 +51,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="myProfile"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'My Profile',
+          tabBarIcon: ({ color }) => <Ionicons name="person-circle-outline" color={color} size={25}/>,
         }}
       />
     </Tabs>

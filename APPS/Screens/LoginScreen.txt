@@ -1,0 +1,127 @@
+// LoginScreen.js
+import React, { useContext, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import Colors from './../Utils/Colors';
+import { AuthContext } from '../../App';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import {MyComponent} from '../Utils/MyComponents';
+
+export default function LoginScreen() {
+  const { auth, setAuth } = useContext(AuthContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [userInfo, setUserInfo] = useState({
+    userName: '',
+    photoURL: '',
+    phoneNumber: ''
+  });
+
+  const handleSignUp = async () => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      setUserInfo({
+        userName: user?.displayName || '',
+        photoURL: user?.photoURL || '',
+        phoneNumber: user?.phoneNumber || ''
+      });
+      setAuth(true);
+    } catch (error) {
+      console.error('Sign Up Error:', error.message);
+    }
+  };
+
+  const handleSignIn = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      setUserInfo({
+        userName: user?.displayName || '',
+        photoURL: user?.photoURL || '',
+        phoneNumber: user?.phoneNumber || ''
+      });
+      setAuth(true);
+    } catch (error) {
+      console.error('Sign In Error:', error.message);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          secureTextEntry
+        />
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleSignIn} style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSignUp} style={[styles.button, styles.buttonOutline]}>
+          <Text style={styles.buttonOutlineText}>Register</Text>
+        </TouchableOpacity>
+      </View>
+
+      <MyComponent user={userInfo} />
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 10,
+    width: '100%',
+  },
+  buttonContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  button: {
+    backgroundColor: Colors.PRIMARY,
+    padding: 15,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonOutline: {
+    backgroundColor: 'white',
+    borderColor: Colors.PRIMARY,
+    borderWidth: 2,
+    marginTop: 5,
+  },
+  buttonOutlineText: {
+    color: Colors.PRIMARY,
+    fontWeight: 'bold',
+  },
+});
